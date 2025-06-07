@@ -1,3 +1,9 @@
+
+source("utils.R")
+source("Labeling _duration_bounds.R")
+
+
+library(munsell)
 library(ggplot2)
 library(plotly)
 library(dplyr)
@@ -111,7 +117,7 @@ server <- function(input, output, session) {
     
     temp_plot = getPossibleRangePlot_plotly(temp_res) 
     
-    ggplotly(temp_plot)
+    # ggplotly(temp_plot)
   })
   
   output$page1_recommendation <- renderText(if (input$page1_submit > 0)
@@ -167,7 +173,7 @@ server <- function(input, output, session) {
   })
   
   
-  output$simstatus_3 <- renderText(if (input$page2_submit > 0)
+  output$page2_status <- renderText(if (input$page2_submit > 0)
   {
     temp = isolate(page2_inputdata())
     
@@ -189,7 +195,7 @@ server <- function(input, output, session) {
   
   
   
-  simulateGetLowerAndUpperLimits_3 <- reactive({
+  simulateGetLowerAndUpperLimits_Range <- reactive({
     temp_input = (page2_inputdata())
     temp_res = getLowerAndUpperLimits_Range(
       as.numeric(temp_input$value[temp_input$key == "neh"]),
@@ -208,46 +214,24 @@ server <- function(input, output, session) {
   })
   
   
-  output$simdatatable_3 <- renderTable ({
+  output$page2_summaryTable <- renderTable ({
     if (input$page2_submit > 0)
     {
       temp_input = isolate(page2_inputdata())
-      temp_res = isolate(simulateGetLowerAndUpperLimits_3())
+      temp_res = isolate(simulateGetLowerAndUpperLimits_Range())
       
       temp_res %>%
         mutate(across(where(is.numeric), ~ format(
           .x, digits = 5, nsmall = 5
         )))
       
-      print(temp_res)
       
-      # colname_lb_low = paste("Lower Limit (exp.), k=", as.numeric(temp_input$value[temp_input$key == "k_low"]))
-      # colname_ub_low = paste("Upper Limit (exp.), k=", as.numeric(temp_input$value[temp_input$key == "k_low"]))
-      # colname_exp_lb_high = paste("Lower Limit (exp.), k=", as.numeric(temp_input$value[temp_input$key == "k_high"]))
-      # colname_exp_ub_high = paste("Upper Limit (exp.), k=", as.numeric(temp_input$value[temp_input$key == "k_high"]))
-      # colname_InRange_low = paste("In Range, k=", as.numeric(temp_input$value[temp_input$key == "k_low"]))
-      # colname_InRange_upper =      paste("In Range, k=", as.numeric(temp_input$value[temp_input$key == "k_high"]))
       
       colname_ub_low = paste("Upper Limit (exp.), k=", as.numeric(temp_input$value[temp_input$key == "I0_t_low_k"]))
       colname_exp_lb_high = paste("Lower Limit (exp.), k=", as.numeric(temp_input$value[temp_input$key == "I0_t_high_k"]))
       colname_InRange_low = paste("In Range, k=", as.numeric(temp_input$value[temp_input$key == "k_low"]))
       colname_InRange_upper =      paste("In Range, k=", as.numeric(temp_input$value[temp_input$key == "k_high"]))
       
-      # temp_res <- temp_res %>%
-      #   rename_with(
-      #     ~ case_when(
-      #       . == "time" ~ "Labeling Duration",
-      #       . == "theo_lb_values" ~ "Lower Limit (theo.)",
-      #       . == "theo_ub_values" ~ "Upper Limit (theo.)",
-      #       . == "lb_low" ~ colname_lb_low,
-      #       . == "ub_low" ~ colname_ub_low,
-      #       . == "exp_lb_high" ~ colname_exp_lb_high,
-      #       . == "exp_ub_high" ~ colname_exp_ub_high,
-      #       . == "InRange_low" ~ colname_InRange_low,
-      #       . == "InRange_upper" ~ colname_InRange_upper,
-      #       TRUE ~ .
-      #     )
-      #   )
       
       temp_res <- temp_res %>%
         rename_with(
@@ -263,17 +247,15 @@ server <- function(input, output, session) {
           )
         )
       
-      print("---------------------")
-      print(temp_res)
       
     }
   })
   
   
   
-  output$simplot_3 <- renderPlotly(if (input$page2_submit > 0)
+  output$page2_plot <- renderPlotly(if (input$page2_submit > 0)
   {
-    temp_res = isolate(simulateGetLowerAndUpperLimits_3())
+    temp_res = isolate(simulateGetLowerAndUpperLimits_Range())
     
     
     temp_input = isolate(page2_inputdata())
@@ -283,14 +265,14 @@ server <- function(input, output, session) {
                                                   as.numeric(temp_input$value[temp_input$key == "k_high"]))
     
     
-    ggplotly(temp_plot)
+    # ggplotly(temp_plot)
   })
   
   
   
-  output$simstatus_recommendation_3 <- renderText(if (input$page2_submit > 0)
+  output$page2_recommendation <- renderText(if (input$page2_submit > 0)
   {
-    temp_res = isolate(simulateGetLowerAndUpperLimits_3())
+    temp_res = isolate(simulateGetLowerAndUpperLimits_Range())
     possibleRange <- temp_res %>% filter(InRange_low == TRUE &
                                            InRange_upper == TRUE)
     min_time <- min(possibleRange$time)

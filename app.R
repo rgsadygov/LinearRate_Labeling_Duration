@@ -1,6 +1,2 @@
 
-
-
-source("init.R")
-
 shinyApp()

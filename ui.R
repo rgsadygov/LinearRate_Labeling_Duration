@@ -174,5 +174,186 @@ ui <- fluidPage(
     
     #==================================================
     
+    #==================================================
+    #================= neh (page 3) =====
+    tabPanel("NEH", mainPanel(
+      fluidRow(
+        column(
+          6,
+          numericInput(
+            "page3_neh_Alanine",
+            label = "Alanine (A)",
+            min = 0.00,
+            max = 15,
+            value = 4.00,
+            step = 0.01
+          ),
+          numericInput(
+            "page3_neh_Cysteine",
+            label = "Cysteine (C)",
+            min = 0.00,
+            max = 15,
+            value = 1.62,
+            step = 0.01
+          ),
+          numericInput(
+            "page3_neh_AsparticAcid",
+            label = "Aspartic Acid (D)",
+            min = 0.00,
+            max = 15,
+            value = 1.89,
+            step = 0.01
+          ),
+          numericInput(
+            "page3_neh_GlutamicAcid",
+            label = "Glutamic Acid (E)",
+            min = 0.00,
+            max = 15,
+            value = 3.95,
+            step = 0.01
+          ),
+          numericInput(
+            "page3_neh_Phenylalanine",
+            label = "Phenylalanine (F)",
+            min = 0.00,
+            max = 15,
+            value = 0.32,
+            step = 0.01
+          ),
+          numericInput(
+            "page3_neh_Glycine",
+            label = "Glycine (G)",
+            min = 0.00,
+            max = 15,
+            value = 2.06,
+            step = 0.01
+          ),
+          numericInput(
+            "page3_neh_Histidine",
+            label = "Histidine (H)",
+            min = 0.00,
+            max = 15,
+            value = 2.88,
+            step = 0.01
+          ),
+          numericInput(
+            "page3_neh_Isoleucine",
+            label = "Isoleucine (I)",
+            min = 0.00,
+            max = 15,
+            value = 1.00,
+            step = 0.01
+          ),
+          numericInput(
+            "page3_neh_Lysine",
+            label = "Lysine (K)",
+            min = 0.00,
+            max = 15,
+            value = 0.54,
+            step = 0.01
+          ),
+          numericInput(
+            "page3_neh_Leucine",
+            label = "Leucine (L)",
+            min = 0.00,
+            max = 15,
+            value = 0.60,
+            step = 0.01
+          )
+        ),
+        column(
+          6,
+          numericInput(
+            "page3_neh_Methionine",
+            label = "Methionine (M)",
+            min = 0.00,
+            max = 15,
+            value = 1.12,
+            step = 0.01
+          ),
+          numericInput(
+            "page3_neh_Asparagine",
+            label = "Asparagine (N)",
+            min = 0.00,
+            max = 15,
+            value = 1.89,
+            step = 0.01
+          ),
+          numericInput(
+            "page3_neh_Proline",
+            label = "Proline (P)",
+            min = 0.00,
+            max = 15,
+            value = 2.59,
+            step = 0.01
+          ),
+          numericInput(
+            "page3_neh_Glutamine",
+            label = "Glutamine (Q)",
+            min = 0.00,
+            max = 15,
+            value = 3.95,
+            step = 0.01
+          ),
+          numericInput(
+            "page3_neh_Arginine",
+            label = "Arginine (R)",
+            min = 0.00,
+            max = 15,
+            value = 3.43,
+            step = 0.01
+          ),
+          numericInput(
+            "page3_neh_Serine",
+            label = "Serine (S)",
+            min = 0.00,
+            max = 15,
+            value = 2.61,
+            step = 0.01
+          ),
+          numericInput(
+            "page3_neh_Threonine",
+            label = "Threonine (T)",
+            min = 0.00,
+            max = 15,
+            value = 0.20,
+            step = 0.01
+          ),
+          numericInput(
+            "page3_neh_Valine",
+            label = "Valine (V)",
+            min = 0.00,
+            max = 15,
+            value = 0.56,
+            step = 0.01
+          ),
+          numericInput(
+            "page3_neh_Tryptophan",
+            label = "Tryptophan (W)",
+            min = 0.00,
+            max = 15,
+            value = 0.08,
+            step = 0.01
+          ),
+          numericInput(
+            "page3_neh_Tyrosine",
+            label = "Tyrosine (Y)",
+            min = 0.00,
+            max = 15,
+            value = 0.42,
+            step = 0.01
+          )
+        )
+      ),
+      br(),
+      div(
+        style = "text-align:center;",
+        actionButton("page3_save_neh", "Save", class = "btn btn-danger btn-lg")
+      ),
+      br(),
+    ))
+    
+    
+    #==================================================
   )
 )

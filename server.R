@@ -1,4 +1,7 @@
 
+
+
+
 source("utils.R")
 source("Labeling _duration_bounds.R")
 
@@ -10,14 +13,14 @@ library(dplyr)
 library(shiny)
 library(tidyr)
 library(shinyjs)
-source("utils.R") 
+library(shinyalert)
+source("utils.R")
 source("Labeling _duration_bounds.R")
 
 
-# Define server logic 
+# Define server logic
 server <- function(input, output, session) {
- 
-   observe({
+  observe({
     # Code to execute on page load
     cat("App has loaded!\n")
     runjs('$(document).ready(function() {$("#page1_submit").click();});')
@@ -29,14 +32,41 @@ server <- function(input, output, session) {
   #page 1
   #====================================================
   
+  neh_inputdata <- reactive({
+    values <- c(
+      "A" = input$page3_neh_Alanine,
+      "C" = input$page3_neh_Cysteine,
+      "D" = input$page3_neh_AsparticAcid,
+      "E" = input$page3_neh_GlutamicAcid,
+      "F" = input$page3_neh_Phenylalanine,
+      "G" = input$page3_neh_Glycine,
+      "H" = input$page3_neh_Histidine,
+      "I" = input$page3_neh_Isoleucine,
+      "K" = input$page3_neh_Lysine,
+      "L" = input$page3_neh_Leucine,
+      "M" = input$page3_neh_Methionine,
+      "N" = input$page3_neh_Asparagine,
+      "P" = input$page3_neh_Proline,
+      "Q" = input$page3_neh_Glutamine,
+      "R" = input$page3_neh_Arginine,
+      "S" = input$page3_neh_Serine,
+      "T" = input$page3_neh_Threonine,
+      "V" = input$page3_neh_Valine,
+      "W" = input$page3_neh_Tryptophan,
+      "Y" = input$page3_neh_Tyrosine
+    )
+    return(values)
+  })
+  
   page1_inputdata <- reactive({
+    neh_values = neh_inputdata()
     dict <- data.frame(
       key = c("bwe", "time", "peptide", "neh", "k", "delta_I0", "kt"),
       value = c(
         input$page1_bwe,
         input$page1_maxTime,
         input$page1_peptide,
-        getNeh(input$page1_peptide),
+        getNeh(input$page1_peptide, neh_values),
         input$page1_expected_k,
         input$page1_delta_I0,
         solve_for_kt_vals(input$page1_max_error / 100)
@@ -48,6 +78,7 @@ server <- function(input, output, session) {
   
   output$page1_plot <- renderText(if (input$page1_submit > 0)
   {
+    neh = isolate(neh_inputdata())
     temp = isolate(page1_inputdata())
     
     if (temp$value[temp$key == "kt"] == Inf) {
@@ -73,6 +104,7 @@ server <- function(input, output, session) {
   
   
   simulateGetLowerAndUpperLimits <- reactive({
+    neh = (neh_inputdata())
     temp_input = (page1_inputdata())
     temp_res = getLowerAndUpperLimits(
       as.numeric(temp_input$value[temp_input$key == "neh"]),
@@ -113,9 +145,9 @@ server <- function(input, output, session) {
   
   output$page1_plot <- renderPlotly(if (input$page1_submit > 0)
   {
-    temp_res = isolate(simulateGetLowerAndUpperLimits()) 
+    temp_res = isolate(simulateGetLowerAndUpperLimits())
     
-    temp_plot = getPossibleRangePlot_plotly(temp_res) 
+    temp_plot = getPossibleRangePlot_plotly(temp_res)
     
     # ggplotly(temp_plot)
   })
@@ -147,6 +179,7 @@ server <- function(input, output, session) {
   
   
   page2_inputdata <- reactive({
+    neh_values = neh_inputdata()
     dict <- data.frame(
       key = c(
         "bwe",
@@ -162,7 +195,7 @@ server <- function(input, output, session) {
         input$page2_bwe,
         input$page2_maxTime,
         input$page2_peptide,
-        getNeh(input$page2_peptide),
+        getNeh(input$page2_peptide, neh_values),
         input$page2_expected_k_low,
         input$page2_expected_k_high,
         input$page2_delta_I0,
@@ -175,18 +208,17 @@ server <- function(input, output, session) {
   
   output$page2_status <- renderText(if (input$page2_submit > 0)
   {
+    neh = isolate(neh_inputdata())
     temp = isolate(page2_inputdata())
     
     
-    return (paste(c(paste(
-      c("Peptide: ", temp$value[temp$key == "peptide"], "(NEH", (temp$value[temp$key == "neh"]), ")")
-    ), paste(
-      c(" Max. Days: ", temp$value[temp$key == "time"])
-    ), paste(c(
-      " kt: ", sprintf("%.4f", as.numeric(temp$value[temp$key == "kt"]))
-    )), paste(
-      c(" BWE: ", temp$value[temp$key == "bwe"])
-    ))
+    return (paste(c(
+      paste(c(
+        "Peptide: ", temp$value[temp$key == "peptide"], "(NEH", (temp$value[temp$key == "neh"]), ")"
+      )), paste(c(" Max. Days: ", temp$value[temp$key == "time"])), paste(c(" kt: ", sprintf(
+        "%.4f", as.numeric(temp$value[temp$key == "kt"])
+      ))), paste(c(" BWE: ", temp$value[temp$key == "bwe"]))
+    )
     , sep = ","))
   }
   else{
@@ -196,6 +228,7 @@ server <- function(input, output, session) {
   
   
   simulateGetLowerAndUpperLimits_Range <- reactive({
+    neh = (neh_inputdata())
     temp_input = (page2_inputdata())
     temp_res = getLowerAndUpperLimits_Range(
       as.numeric(temp_input$value[temp_input$key == "neh"]),
@@ -217,6 +250,7 @@ server <- function(input, output, session) {
   output$page2_summaryTable <- renderTable ({
     if (input$page2_submit > 0)
     {
+      neh = isolate(neh_inputdata())
       temp_input = isolate(page2_inputdata())
       temp_res = isolate(simulateGetLowerAndUpperLimits_Range())
       
@@ -238,8 +272,8 @@ server <- function(input, output, session) {
           ~ case_when(
             . == "time" ~ "Labeling Duration",
             . == "theo_lb_values" ~ "Lower Limit (theo.)",
-            . == "theo_ub_values" ~ "Upper Limit (theo.)", 
-            . == "ub_low" ~ colname_ub_low, 
+            . == "theo_ub_values" ~ "Upper Limit (theo.)",
+            . == "ub_low" ~ colname_ub_low,
             . == "exp_ub_high" ~ colname_exp_lb_high,
             . == "InRange_low" ~ colname_InRange_low,
             . == "InRange_upper" ~ colname_InRange_upper,
@@ -257,7 +291,7 @@ server <- function(input, output, session) {
   {
     temp_res = isolate(simulateGetLowerAndUpperLimits_Range())
     
-    
+    neh = isolate(neh_inputdata())
     temp_input = isolate(page2_inputdata())
     
     temp_plot = getPossibleRangePlot_plotly_range(temp_res,
@@ -291,8 +325,23 @@ server <- function(input, output, session) {
     return ("")
   })
   
+  #===================== neh values ====================================
   
   
+  observeEvent(input$page3_save_neh, {
+    if (input$page3_save_neh > 0) {
+      # Code to neh values saved
+      cat("Neh values saved!\n")
+      runjs('$(document).ready(function() {$("#page1_submit").click();});')
+      runjs('$(document).ready(function() {$("#page2_submit").click();});')
+      
+      shinyalert(# title = "Important Message",
+        text = "NEH values updated!.",
+        type = "success",
+        confirmButtonText = "Ok")
+      
+    }
+  })
   
   
   

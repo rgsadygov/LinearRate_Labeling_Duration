@@ -9,7 +9,8 @@ installAndLoadRequiredPackages <- function() {
     "shiny",
     "shinythemes",
     "httr",
-    "shinylive"
+    "shinylive",
+    "shinyalert"
   )
   
   # Function to install and load packages

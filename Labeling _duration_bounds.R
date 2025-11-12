@@ -92,7 +92,6 @@ getLowerAndUpperLimits_Range <- function(neh,
     I0_t_low_k = I0_asymp + (I0_0 - I0_asymp) * exp(-k_low * t_i)
     I0_t_high_k = I0_asymp + (I0_0 - I0_asymp) * exp(-k_high * t_i)
     
-    
     result_df <- rbind(
       result_df,
       data.frame(

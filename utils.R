@@ -24,31 +24,29 @@ get_I0_asymp <- function(I0_0, neh) {
 
 # funtion to compute the numberof exchangable hydrogens for a given
 # peptide sequence
-getNeh <- function(peptide) {
-  aa_neh = list(
-    "A" = 4   ,
-    "C" = 1.62,
-    "D" = 1.89,
-    "E" = 3.95,
-    "F" = 0.32,
-    "G" = 2.06,
-    "H" = 2.88,
-    "I" = 1   ,
-    "K" = 0.54,
-    "L" = 0.6 ,
-    "M" = 1.12,
-    "N" = 1.89,
-    "P" = 2.59,
-    "Q" = 3.95,
-    "R" = 3.43,
-    "S" = 2.61,
-    "T" = 0.2 ,
-    "V" = 0.56,
-    "W" = 0.08,
-    "Y" = 0.42
-  )
-  
-  
+getNeh <- function(peptide,
+                   aa_neh = list(
+                     "A" = 4   ,
+                     "C" = 1.62,
+                     "D" = 1.89,
+                     "E" = 3.95,
+                     "F" = 0.32,
+                     "G" = 2.06,
+                     "H" = 2.88,
+                     "I" = 1   ,
+                     "K" = 0.54,
+                     "L" = 0.6 ,
+                     "M" = 1.12,
+                     "N" = 1.89,
+                     "P" = 2.59,
+                     "Q" = 3.95,
+                     "R" = 3.43,
+                     "S" = 2.61,
+                     "T" = 0.2 ,
+                     "V" = 0.56,
+                     "W" = 0.08,
+                     "Y" = 0.42
+                   )) {
   res = 0
   for (aa in strsplit(peptide, "")[[1]]) {
     res = res + as.numeric(aa_neh[as.character(aa)])
@@ -58,10 +56,9 @@ getNeh <- function(peptide) {
   
 }
 
-# Function to create a plot showing experimental and theoretical I0 bounds 
+# Function to create a plot showing experimental and theoretical I0 bounds
 # over time and recommended labeling duration
 getPossibleRangePlot_plotly <- function(ans) {
-  
   # Convert columns data type to numeric values
   ans$time <- as.numeric(ans$time)
   ans$lb <- as.numeric(ans$lb)
@@ -189,10 +186,9 @@ getPossibleRangePlot_plotly <- function(ans) {
 }
 
 
-# Function to create a plot showing experimental and theoretical I0 bounds 
+# Function to create a plot showing experimental and theoretical I0 bounds
 # over time and recommended range of labeling durations
 getPossibleRangePlot_plotly_range <- function(ans, klow, khigh) {
-  
   # Convert columns data type to numeric values
   ans$time <- as.numeric(ans$time)
   ans$theo_lb_values <- as.numeric(ans$theo_lb_values)
@@ -215,7 +211,7 @@ getPossibleRangePlot_plotly_range <- function(ans, klow, khigh) {
   max_time <- max(possibleRange$time)
   max_y <- max(possibleRange$theo_ub_values)
   min_y <- min(possibleRange$theo_lb_values)
-   
+  
   
   # Define rectangle for visualizing valid I0 range area
   rect_x <- c(min_time,
@@ -343,6 +339,6 @@ solve_for_kt_vals <- function(rd) {
   }, error = function(e) {
     NA  # Return NA if no root found
   })
-
+  
   return(result)
 }
